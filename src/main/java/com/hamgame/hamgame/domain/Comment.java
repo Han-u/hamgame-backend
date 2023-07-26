@@ -2,6 +2,7 @@ package com.hamgame.hamgame.domain;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -34,14 +35,18 @@ public class Comment extends BaseTimeEntity {
 	@Column(nullable = false)
 	private String comment;
 
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JsonIgnore
 	@JoinColumn(name = "board_id")
 	private Board board;
 
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "user_id")
 	private User user;
 
 	private boolean isDeleted = Boolean.FALSE;
+
+	public void updateComment(String comment) {
+		this.comment = comment;
+	}
 }
