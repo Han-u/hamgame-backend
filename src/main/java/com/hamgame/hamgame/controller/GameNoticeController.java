@@ -1,12 +1,15 @@
 package com.hamgame.hamgame.controller;
 
-import java.util.List;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.hamgame.hamgame.domain.GameNotice;
+import com.hamgame.hamgame.dto.GameNoticeDto;
+import com.hamgame.hamgame.service.GameNoticeService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -15,8 +18,11 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class GameNoticeController {
 
-	@GetMapping("")
-	public List<GameNotice> getMyGameNoticeList() {
-		return null;
+	private final GameNoticeService gameNoticeService;
+
+	@GetMapping
+	public Page<GameNoticeDto> getMyGameNoticeList(
+		@PageableDefault(sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
+		return gameNoticeService.getMyGameNoticeList(pageable);
 	}
 }
