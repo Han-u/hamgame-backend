@@ -1,43 +1,53 @@
 plugins {
-	id 'java'
-	id 'org.springframework.boot' version '2.7.14'
-	id 'io.spring.dependency-management' version '1.0.15.RELEASE'
+    id 'java'
+    id 'org.springframework.boot' version '2.7.14'
+    id 'io.spring.dependency-management' version '1.0.15.RELEASE'
 }
 
 group = 'com.hamgame'
 version = '0.0.1-SNAPSHOT'
 
 java {
-	sourceCompatibility = '11'
+    sourceCompatibility = '11'
 }
 
 configurations {
-	compileOnly {
-		extendsFrom annotationProcessor
-	}
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
 }
 
 repositories {
-	mavenCentral()
+    mavenCentral()
 }
 
 dependencies {
-	// REST
-	implementation 'org.springframework.boot:spring-boot-starter-web'
-	// JDBC
-	implementation 'org.springframework.boot:spring-boot-starter-jdbc'
-	// JPA
-	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-	// MySQL
-	runtimeOnly 'com.mysql:mysql-connector-j'
-	// Lombok
-	compileOnly 'org.projectlombok:lombok'
-	annotationProcessor 'org.projectlombok:lombok'
+    // REST
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    // JDBC
+    implementation 'org.springframework.boot:spring-boot-starter-jdbc'
+    // JPA
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    // MySQL
+    runtimeOnly 'com.mysql:mysql-connector-j'
+    // Security
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    // OAuth 2.0
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+    // JWT
+    implementation group: 'io.jsonwebtoken', name: 'jjwt-api', version: '0.11.2'
+    runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-impl', version: '0.11.2'
+    runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-jackson', version: '0.11.2'
+    // Lombok
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+    // Validator
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
 
-	// test
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    // test
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 
 tasks.named('test') {
-	useJUnitPlatform()
+    useJUnitPlatform()
 }
