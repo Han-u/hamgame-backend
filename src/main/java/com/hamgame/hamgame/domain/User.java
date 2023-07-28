@@ -1,14 +1,21 @@
 package com.hamgame.hamgame.domain;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.hamgame.hamgame.domain.time.BaseTimeEntity;
+import com.hamgame.hamgame.domain.type.Provider;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import javax.persistence.*;
-
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -17,19 +24,33 @@ import javax.persistence.*;
 @Entity
 public class User extends BaseTimeEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
 
-    @Column(nullable = false)
-    private String email;
+	private String name;
 
-    @JsonIgnore
-    private String password;
+	@Column(nullable = false)
+	private String email;
 
-    private String nickname;
+	@JsonIgnore
+	private String password;
 
-    private String bio;
+	private String nickname;
 
-    private String image;
+	private String bio;
+
+	private String imageUrl;
+
+	@Enumerated(EnumType.STRING)
+	private Provider provider;
+
+	public void updateName(String name) {
+		this.name = name;
+	}
+
+	public void updateImageUrl(String imageUrl) {
+		this.imageUrl = imageUrl;
+	}
+
 }
