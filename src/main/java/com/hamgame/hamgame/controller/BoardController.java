@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.hamgame.hamgame.common.CurrentUser;
+import com.hamgame.hamgame.config.security.auth.UserPrincipal;
 import com.hamgame.hamgame.domain.type.BoardCategory;
 import com.hamgame.hamgame.dto.BoardDto;
 import com.hamgame.hamgame.dto.BoardListDto;
@@ -44,19 +46,21 @@ public class BoardController {
 	}
 
 	@PostMapping
-	public void createBoard(@PathVariable Long gameId, @RequestBody @Valid BoardSaveReq boardSaveReq) {
-		boardService.createBoard(gameId, boardSaveReq);
+	public void createBoard(@PathVariable Long gameId, @RequestBody @Valid BoardSaveReq boardSaveReq, @CurrentUser
+	UserPrincipal userPrincipal) {
+		boardService.createBoard(gameId, boardSaveReq, userPrincipal);
 	}
 
 	@PutMapping("/{boardId}")
 	public void updateBoard(@PathVariable Long gameId, @PathVariable Long boardId,
-		@RequestBody @Valid BoardSaveReq boardSaveReq) {
-		boardService.updateBoard(gameId, boardId, boardSaveReq);
+		@RequestBody @Valid BoardSaveReq boardSaveReq, @CurrentUser UserPrincipal userPrincipal) {
+		boardService.updateBoard(gameId, boardId, boardSaveReq, userPrincipal);
 	}
 
 	@DeleteMapping("/{boardId}")
-	public void deleteBoard(@PathVariable Long gameId, @PathVariable Long boardId) {
-		boardService.deleteBoard(gameId, boardId);
+	public void deleteBoard(@PathVariable Long gameId, @PathVariable Long boardId,
+		@CurrentUser UserPrincipal userPrincipal) {
+		boardService.deleteBoard(gameId, boardId, userPrincipal);
 	}
 
 }
