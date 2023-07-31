@@ -1,4 +1,4 @@
-package com.hamgame.hamgame.config.security;
+package com.hamgame.hamgame.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
