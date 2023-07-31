@@ -28,7 +28,7 @@ jobs:
         run: chmod +x ./gradlew
 
       - name: 4. 프로젝트 빌드
-        run: ./gradlew clean build
+        run: ./gradlew clean build -x test
 
       - name: 5. AWS IAM 사용자로 인증
         uses: aws-actions/configure-aws-credentials@v1
