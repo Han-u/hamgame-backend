@@ -1,0 +1,56 @@
+server:
+  port: 8080
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/hamgame
+    username: han1
+    password: han1
+
+
+  jpa:
+    hibernate:
+      ddl-auto: update  # option type: create, create-drop, update, validate, none
+    properties:
+      hibernate:
+        show_sql: true  # sql ?? ???
+        format_sql: true  # ?? ???
+        default_batch_fetch_size: 1000
+
+  data:
+    web:
+      pageable:
+        default-page-size: 10
+        max-page-size: 2000
+        one-indexed-parameters: true
+
+  security:
+    oauth2:
+      client:
+        registration:
+          kakao:
+            client-id: a6418c103857bee3f2d97da6886ed1d7
+            redirect-uri: "http://localhost:8080/oauth2/callback/kakao"
+            client-authentication-method: POST
+            authorization-grant-type: authorization_code
+            scope: profile_nickname, account_email
+            client-name: kakao
+        provider:
+          kakao:
+            authorization-uri: https://kauth.kakao.com/oauth/authorize
+            token-uri: https://kauth.kakao.com/oauth/token
+            user-info-uri: https://kapi.kakao.com/v2/user/me
+            user-name-attribute: id
+
+  jwt:
+    token:
+      secret-key: aW05YW0wbWVsb25heno1YW42MW1mMXkxbmduMHcxZXRzZjF5dDBnZXRoZTY=
+    access:
+      expiration: 86400
+    refresh:
+      expiration: 1209600000
+    #    authorizedRedirectUris: http://localhost:3000/oauth2/redirect
+    authorized-redirect-uris:
+      http://localhost:8080/auth/token,
+      http://localhost:3000/oauth2/redirect
