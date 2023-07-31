@@ -5,6 +5,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import com.hamgame.hamgame.exception.payload.ErrorCode;
+import com.hamgame.hamgame.exception.payload.ErrorResponse;
+
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
