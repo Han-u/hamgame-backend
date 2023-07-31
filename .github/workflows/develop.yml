@@ -7,7 +7,7 @@ on:
 env:
   AWS_REGION: ap-northeast-2
   S3_BUCKET_NAME: hamgame-deploy
-  CODE_DEPLOY_APPLICATION_NAME: hamgame-server
+  CODE_DEPLOY_APPLICATION_NAME: hamgame
   CODE_DEPLOY_DEPLOYMENT_GROUP_NAME: hamgame-deployment-group
 
 jobs:
