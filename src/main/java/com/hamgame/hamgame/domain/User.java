@@ -1,35 +1,15 @@
 package com.hamgame.hamgame.domain;
 
 import java.util.HashSet;
+import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
-
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -38,14 +18,9 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 
-import java.util.List;
-import java.util.Objects;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.hamgame.hamgame.domain.time.BaseTimeEntity;
-
 import com.hamgame.hamgame.domain.type.Provider;
-
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -75,10 +50,10 @@ public class User extends BaseTimeEntity {
 
 	private String bio;
 
-    private String imageUrl;
+	private String imageUrl;
 
-    @Enumerated(EnumType.STRING)
-    private Provider provider;
+	@Enumerated(EnumType.STRING)
+	private Provider provider;
 
 	@ManyToMany(
 		fetch = FetchType.LAZY,
@@ -92,7 +67,6 @@ public class User extends BaseTimeEntity {
 		inverseJoinColumns = {@JoinColumn(name = "game_id")})
 	private Set<Game> games = new HashSet<>();
 
-
 	public void updateName(String name) {
 		this.name = name;
 	}
@@ -101,20 +75,20 @@ public class User extends BaseTimeEntity {
 		this.imageUrl = imageUrl;
 	}
 
-    public void addGames(List<Game> newGames) {
-        this.games.addAll(newGames);
-    }
+	public void addGames(List<Game> newGames) {
+		this.games.addAll(newGames);
+	}
 
-    public void removeGame(Long id) {
-        this.games.stream()
-            .filter(g -> Objects.equals(g.getGameId(), id))
-            .findFirst()
-            .ifPresent(game -> games.remove(game));
-    }
+	public void removeGame(Long id) {
+		this.games.stream()
+			.filter(g -> Objects.equals(g.getGameId(), id))
+			.findFirst()
+			.ifPresent(game -> games.remove(game));
+	}
 
-    public void updateGames(List<Game> updateGames) {
-        games.clear();
-        games.addAll(updateGames);
-    }
+	public void updateGames(List<Game> updateGames) {
+		games.clear();
+		games.addAll(updateGames);
+	}
 
 }
