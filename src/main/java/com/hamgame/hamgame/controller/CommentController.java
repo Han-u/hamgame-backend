@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.hamgame.hamgame.common.CurrentUser;
+import com.hamgame.hamgame.config.security.auth.UserPrincipal;
 import com.hamgame.hamgame.dto.CommentSaveReq;
 import com.hamgame.hamgame.service.CommentService;
 
@@ -24,19 +26,20 @@ public class CommentController {
 
 	@PostMapping
 	public void createComment(@PathVariable Long gameId, @PathVariable Long boardId,
-		@RequestBody @Valid CommentSaveReq commentSaveReq) {
-		commentService.createComment(boardId, commentSaveReq);
+		@RequestBody @Valid CommentSaveReq commentSaveReq, @CurrentUser UserPrincipal userPrincipal) {
+		commentService.createComment(boardId, commentSaveReq, userPrincipal);
 
 	}
 
 	@PutMapping("/{commentId}")
 	public void updateComment(@PathVariable Long gameId, @PathVariable Long boardId, @PathVariable Long commentId,
-		@RequestBody @Valid CommentSaveReq commentSaveReq) {
-		commentService.updateComment(boardId, commentId, commentSaveReq);
+		@RequestBody @Valid CommentSaveReq commentSaveReq, @CurrentUser UserPrincipal userPrincipal) {
+		commentService.updateComment(boardId, commentId, commentSaveReq, userPrincipal);
 	}
 
 	@DeleteMapping("/{commentId}")
-	public void deleteComment(@PathVariable Long gameId, @PathVariable Long boardId, @PathVariable Long commentId) {
-		commentService.deleteComment(boardId, commentId);
+	public void deleteComment(@PathVariable Long gameId, @PathVariable Long boardId, @PathVariable Long commentId,
+		@CurrentUser UserPrincipal userPrincipal) {
+		commentService.deleteComment(boardId, commentId, userPrincipal);
 	}
 }

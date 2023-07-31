@@ -14,7 +14,9 @@ public enum ErrorCode {
 
 	USER_NOT_FOUND(404, "U001", "유저를 찾을 수 없습니다."),
 
-	BOARD_NOT_FOUND(404, "B001", "게시글을 찾을 수 없습니다");
+	BOARD_NOT_FOUND(404, "B001", "게시글을 찾을 수 없습니다"),
+
+	COMMENT_NOT_FOUND(404, "CM001", "댓글을 찾을 수 없습니다.");
 
 	private final int status;
 	private final String code;
