@@ -1,5 +1,7 @@
 package com.hamgame.hamgame.exception;
 
+import com.hamgame.hamgame.exception.payload.ErrorCode;
+
 public class CustomException extends RuntimeException {
 	private ErrorCode errorCode;
 
