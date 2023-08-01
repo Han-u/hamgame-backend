@@ -4,7 +4,7 @@ server:
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/hamgame
+    url: jdbc:mysql://database-1.crkfv1swqawz.ap-northeast-2.rds.amazonaws.com:3307/hamgame
     username: han1
     password: han1
 
