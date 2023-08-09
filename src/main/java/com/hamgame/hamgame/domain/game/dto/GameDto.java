@@ -35,4 +35,13 @@ public class GameDto {
 			.build();
 	}
 
+	public Game toEntity() {
+		return Game.builder()
+			.gameId(gameId)
+			.name(name)
+			.category(category)
+			.imageUrl(imageUrl)
+			.homepageUrl(homepageUrl)
+			.build();
+	}
 }

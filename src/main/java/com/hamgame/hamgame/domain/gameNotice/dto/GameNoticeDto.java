@@ -1,8 +1,9 @@
 package com.hamgame.hamgame.domain.gameNotice.dto;
 
+import java.time.LocalDateTime;
+
 import com.hamgame.hamgame.domain.game.dto.GameDto;
 import com.hamgame.hamgame.domain.gameNotice.entity.GameNotice;
-import com.hamgame.hamgame.domain.gameNotice.entity.NoticeType;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -16,8 +17,10 @@ import lombok.NoArgsConstructor;
 public class GameNoticeDto {
 	private Long gameNoticeId;
 	private String title;
-	private NoticeType noticeType;
-	private String url;
+	private String noticeType;
+	private String noticeUrl;
+	private String imageUrl;
+	private LocalDateTime postCreatedAt;
 	private GameDto game;
 
 	public static GameNoticeDto of(GameNotice gameNotice) {
@@ -25,8 +28,21 @@ public class GameNoticeDto {
 			.gameNoticeId(gameNotice.getGameNoticeId())
 			.title(gameNotice.getTitle())
 			.noticeType(gameNotice.getNoticeType())
-			.url(gameNotice.getUrl())
+			.noticeUrl(gameNotice.getNoticeUrl())
+			.imageUrl(gameNotice.getImageUrl())
+			.postCreatedAt(gameNotice.getPostCreatedAt())
 			.game(GameDto.of(gameNotice.getGame()))
+			.build();
+	}
+
+	public GameNotice toEntity() {
+		return GameNotice.builder()
+			.title(title)
+			.noticeType(noticeType)
+			.noticeUrl(noticeUrl)
+			.game(game.toEntity())
+			.imageUrl(imageUrl)
+			.postCreatedAt(postCreatedAt)
 			.build();
 	}
 }
