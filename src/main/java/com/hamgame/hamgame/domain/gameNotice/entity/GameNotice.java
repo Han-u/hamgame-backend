@@ -1,9 +1,9 @@
 package com.hamgame.hamgame.domain.gameNotice.entity;
 
+import java.time.LocalDateTime;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -36,14 +36,18 @@ public class GameNotice extends BaseTimeEntity {
 	@Column(nullable = false)
 	private String title;
 
-	@Enumerated(EnumType.STRING)
-	private NoticeType noticeType;
+	private String noticeType;
 
-	private String url;
+	private String noticeUrl;
+
+	private String imageUrl;
+
+	private LocalDateTime postCreatedAt;
 
 	@ManyToOne
 	@JoinColumn(name = "game_id")
 	private Game game;
 
 	private boolean isDeleted = Boolean.FALSE;
+
 }
