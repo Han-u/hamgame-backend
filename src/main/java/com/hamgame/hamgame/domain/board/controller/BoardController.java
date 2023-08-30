@@ -49,19 +49,19 @@ public class BoardController {
 	public void createBoard(@PathVariable Long gameId, @RequestBody @Valid BoardSaveRequest boardSaveRequest,
 		@CurrentUser
 		UserPrincipal userPrincipal) {
-		boardService.createBoard(gameId, boardSaveRequest, userPrincipal);
+		boardService.createBoard(gameId, boardSaveRequest, userPrincipal.getId());
 	}
 
 	@PutMapping("/{boardId}")
 	public void updateBoard(@PathVariable Long gameId, @PathVariable Long boardId,
 		@RequestBody @Valid BoardSaveRequest boardSaveRequest, @CurrentUser UserPrincipal userPrincipal) {
-		boardService.updateBoard(gameId, boardId, boardSaveRequest, userPrincipal);
+		boardService.updateBoard(gameId, boardId, boardSaveRequest, userPrincipal.getId());
 	}
 
 	@DeleteMapping("/{boardId}")
 	public void deleteBoard(@PathVariable Long gameId, @PathVariable Long boardId,
 		@CurrentUser UserPrincipal userPrincipal) {
-		boardService.deleteBoard(gameId, boardId, userPrincipal);
+		boardService.deleteBoard(gameId, boardId, userPrincipal.getId());
 	}
 
 }
