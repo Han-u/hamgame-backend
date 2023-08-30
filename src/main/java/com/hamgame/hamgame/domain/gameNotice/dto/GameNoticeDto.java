@@ -5,22 +5,31 @@ import java.time.LocalDateTime;
 import com.hamgame.hamgame.domain.game.dto.GameDto;
 import com.hamgame.hamgame.domain.gameNotice.entity.GameNotice;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+@Schema(description = "게임 공지 응답DTO")
 @Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class GameNoticeDto {
+	@Schema(description = "공지 번호")
 	private Long gameNoticeId;
+	@Schema(description = "제목")
 	private String title;
+	@Schema(description = "카테고리")
 	private String noticeType;
+	@Schema(description = "공지 url")
 	private String noticeUrl;
+	@Schema(description = "이미지 url")
 	private String imageUrl;
+	@Schema(description = "공지 작성 일자")
 	private LocalDateTime postCreatedAt;
+	@Schema(description = "게임 정보")
 	private GameDto game;
 
 	public static GameNoticeDto of(GameNotice gameNotice) {
