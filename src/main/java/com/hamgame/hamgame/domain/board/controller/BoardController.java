@@ -24,8 +24,12 @@ import com.hamgame.hamgame.domain.board.entity.BoardCategory;
 import com.hamgame.hamgame.domain.board.service.BoardService;
 import com.hamgame.hamgame.security.auth.UserPrincipal;
 
+import io.swagger.annotations.Api;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
 
+@Api(tags = "게시판")
 @RequiredArgsConstructor
 @RequestMapping("/games/{gameId}/boards")
 @RestController
@@ -33,33 +37,47 @@ public class BoardController {
 
 	private final BoardService boardService;
 
+	@Operation(summary = "게시글 리스트 조회", description = "선택된 게임의 게시글을 조회합니다.")
 	@GetMapping
-	public Page<BoardListDto> getBoardList(@PathVariable Long gameId,
+	public Page<BoardListDto> getBoardList(
+		@Parameter(description = "게임 Id") @PathVariable Long gameId,
 		@PageableDefault(sort = "boardId", direction = Sort.Direction.DESC) Pageable pageable,
-		@RequestParam(value = "category", required = false) BoardCategory boardCategory) {
+		@Parameter(description = "게시글 카테고리") @RequestParam(value = "category", required = false) BoardCategory boardCategory) {
 		return boardService.getBoardList(gameId, pageable, boardCategory);
 	}
 
+	@Operation(summary = "게시글 단건 조회", description = "특정 게시글을 조회합니다.")
 	@GetMapping("/{boardId}")
-	public BoardDto getBoard(@PathVariable Long gameId, @PathVariable Long boardId) {
+	public BoardDto getBoard(
+		@Parameter(description = "게임 Id") @PathVariable Long gameId,
+		@Parameter(description = "게시글 Id") @PathVariable Long boardId) {
 		return boardService.getBoard(gameId, boardId);
 	}
 
+	@Operation(summary = "게시글 작성", description = "게시글을 작성합니다.")
 	@PostMapping
-	public void createBoard(@PathVariable Long gameId, @RequestBody @Valid BoardSaveRequest boardSaveRequest,
-		@CurrentUser
-		UserPrincipal userPrincipal) {
+	public void createBoard(
+		@Parameter(description = "게임 Id") @PathVariable Long gameId,
+		@Parameter(description = "게시글 작성 정보") @RequestBody @Valid BoardSaveRequest boardSaveRequest,
+		@Parameter(description = "사용자") @CurrentUser UserPrincipal userPrincipal) {
 		boardService.createBoard(gameId, boardSaveRequest, userPrincipal.getId());
 	}
 
+	@Operation(summary = "게시글 수정", description = "나의 게시글을 수정합니다.")
 	@PutMapping("/{boardId}")
-	public void updateBoard(@PathVariable Long gameId, @PathVariable Long boardId,
-		@RequestBody @Valid BoardSaveRequest boardSaveRequest, @CurrentUser UserPrincipal userPrincipal) {
+	public void updateBoard(
+		@Parameter(description = "게임 Id") @PathVariable Long gameId,
+		@Parameter(description = "게시글 Id") @PathVariable Long boardId,
+		@RequestBody @Valid BoardSaveRequest boardSaveRequest,
+		@CurrentUser UserPrincipal userPrincipal) {
 		boardService.updateBoard(gameId, boardId, boardSaveRequest, userPrincipal.getId());
 	}
 
+	@Operation(summary = "게시글 삭제", description = "나의 게시글을 삭제합니다.")
 	@DeleteMapping("/{boardId}")
-	public void deleteBoard(@PathVariable Long gameId, @PathVariable Long boardId,
+	public void deleteBoard(
+		@Parameter(description = "게임 Id") @PathVariable Long gameId,
+		@Parameter(description = "게시글 Id") @PathVariable Long boardId,
 		@CurrentUser UserPrincipal userPrincipal) {
 		boardService.deleteBoard(gameId, boardId, userPrincipal.getId());
 	}

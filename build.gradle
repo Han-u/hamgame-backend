@@ -47,6 +47,9 @@ dependencies {
     implementation 'org.jsoup:jsoup:1.15.4'
     // json
     implementation 'org.json:json:20230227'
+    // swagger
+    implementation 'io.springfox:springfox-boot-starter:3.0.0'
+    implementation 'io.springfox:springfox-swagger-ui:3.0.0'
 
     // test
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
