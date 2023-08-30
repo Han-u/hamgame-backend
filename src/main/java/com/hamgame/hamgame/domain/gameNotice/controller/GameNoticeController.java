@@ -9,9 +9,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.hamgame.hamgame.common.CurrentUser;
-import com.hamgame.hamgame.security.auth.UserPrincipal;
 import com.hamgame.hamgame.domain.gameNotice.dto.GameNoticeDto;
 import com.hamgame.hamgame.domain.gameNotice.service.GameNoticeService;
+import com.hamgame.hamgame.security.auth.UserPrincipal;
 
 import lombok.RequiredArgsConstructor;
 
@@ -24,8 +24,8 @@ public class GameNoticeController {
 
 	@GetMapping
 	public Page<GameNoticeDto> getMyGameNoticeList(
-		@PageableDefault(sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable, @CurrentUser
-	UserPrincipal userPrincipal) {
-		return gameNoticeService.getMyGameNoticeList(pageable, userPrincipal);
+		@PageableDefault(sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable,
+		@CurrentUser UserPrincipal userPrincipal) {
+		return gameNoticeService.getMyGameNoticeList(pageable, userPrincipal.getId());
 	}
 }

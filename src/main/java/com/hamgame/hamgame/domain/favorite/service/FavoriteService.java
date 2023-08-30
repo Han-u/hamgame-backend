@@ -16,7 +16,6 @@ import com.hamgame.hamgame.domain.user.entity.User;
 import com.hamgame.hamgame.domain.user.entity.repository.UserRepository;
 import com.hamgame.hamgame.exception.CustomException;
 import com.hamgame.hamgame.exception.payload.ErrorCode;
-import com.hamgame.hamgame.security.auth.UserPrincipal;
 
 import lombok.RequiredArgsConstructor;
 
@@ -28,33 +27,33 @@ public class FavoriteService {
 
 	private final GameRepository gameRepository;
 
-	public List<GameDto> getFavoriteGameList(UserPrincipal userPrincipal) {
-		User user = userRepository.findById(userPrincipal.getId())
+	public List<GameDto> getFavoriteGameList(Long userId) {
+		User user = userRepository.findById(userId)
 			.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 		return user.getGames().stream().map(GameDto::of).collect(Collectors.toList());
 	}
 
 	@Transactional
-	public void addGame(FavAddRequest requestDto, UserPrincipal userPrincipal) {
-		User user = userRepository.findById(userPrincipal.getId())
+	public void addGame(FavAddRequest requestDto, Long userId) {
+		User user = userRepository.findById(userId)
 			.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 		List<Game> games = gameRepository.findByGameIdIn(requestDto.getGameIds());
 		user.addGames(games);
 	}
 
 	@Transactional
-	public void removeGame(FavRemoveRequest requestDto, UserPrincipal userPrincipal) {
-		User user = userRepository.findById(userPrincipal.getId())
+	public void updateGames(FavUpdateRequest requestDto, Long userId) {
+		User user = userRepository.findById(userId)
 			.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
-		user.removeGame(requestDto.getGameId());
+		List<Game> games = gameRepository.findByGameIdIn(requestDto.getGameIds());
+		user.updateGames(games);
 	}
 
 	@Transactional
-	public void updateGames(FavUpdateRequest requestDto, UserPrincipal userPrincipal) {
-		List<Game> games = gameRepository.findByGameIdIn(requestDto.getGameIds());
-		User user = userRepository.findById(userPrincipal.getId())
+	public void removeGame(FavRemoveRequest requestDto, Long userId) {
+		User user = userRepository.findById(userId)
 			.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
-		user.updateGames(games);
+		user.removeGame(requestDto.getGameId());
 	}
 
 }

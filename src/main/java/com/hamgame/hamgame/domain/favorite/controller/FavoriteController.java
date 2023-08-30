@@ -2,10 +2,13 @@ package com.hamgame.hamgame.domain.favorite.controller;
 
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -28,22 +31,24 @@ public class FavoriteController {
 
 	@GetMapping
 	public List<GameDto> getFavoriteGameList(@CurrentUser UserPrincipal userPrincipal) {
-		return favoriteService.getFavoriteGameList(userPrincipal);
+		return favoriteService.getFavoriteGameList(userPrincipal.getId());
 	}
 
 	@PostMapping
-	public void addFavoriteGames(FavAddRequest requestDto, @CurrentUser UserPrincipal userPrincipal) {
-		favoriteService.addGame(requestDto, userPrincipal);
+	public void addFavoriteGames(@RequestBody @Valid FavAddRequest requestDto,
+		@CurrentUser UserPrincipal userPrincipal) {
+		favoriteService.addGame(requestDto, userPrincipal.getId());
 	}
 
 	@PutMapping
-	public void updateFavoriteGames(FavUpdateRequest requestDto, @CurrentUser UserPrincipal userPrincipal) {
-		favoriteService.updateGames(requestDto, userPrincipal);
+	public void updateFavoriteGames(@RequestBody @Valid FavUpdateRequest requestDto,
+		@CurrentUser UserPrincipal userPrincipal) {
+		favoriteService.updateGames(requestDto, userPrincipal.getId());
 	}
 
 	@DeleteMapping
-	public void removeGames(FavRemoveRequest requestDto, @CurrentUser UserPrincipal userPrincipal) {
-		favoriteService.removeGame(requestDto, userPrincipal);
+	public void removeGames(@RequestBody @Valid FavRemoveRequest requestDto, @CurrentUser UserPrincipal userPrincipal) {
+		favoriteService.removeGame(requestDto, userPrincipal.getId());
 	}
 
 }
