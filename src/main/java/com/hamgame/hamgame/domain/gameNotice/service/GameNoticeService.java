@@ -23,7 +23,6 @@ import com.hamgame.hamgame.domain.user.entity.User;
 import com.hamgame.hamgame.domain.user.entity.repository.UserRepository;
 import com.hamgame.hamgame.exception.CustomException;
 import com.hamgame.hamgame.exception.payload.ErrorCode;
-import com.hamgame.hamgame.security.auth.UserPrincipal;
 
 import lombok.RequiredArgsConstructor;
 
@@ -35,8 +34,8 @@ public class GameNoticeService {
 
 	private final GameNoticeConfigRepository gameNoticeConfigRepository;
 
-	public Page<GameNoticeDto> getMyGameNoticeList(Pageable pageable, UserPrincipal userPrincipal) {
-		User user = userRepository.findById(userPrincipal.getId())
+	public Page<GameNoticeDto> getMyGameNoticeList(Pageable pageable, Long userId) {
+		User user = userRepository.findById(userId)
 			.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 		Set<Game> games = user.getGames();
 		return gameNoticeRepository.findByGameIn(games, pageable).map(GameNoticeDto::of);

@@ -27,19 +27,19 @@ public class CommentController {
 	@PostMapping
 	public void createComment(@PathVariable Long gameId, @PathVariable Long boardId,
 		@RequestBody @Valid CommentSaveRequest commentSaveRequest, @CurrentUser UserPrincipal userPrincipal) {
-		commentService.createComment(boardId, commentSaveRequest, userPrincipal);
+		commentService.createComment(boardId, commentSaveRequest, userPrincipal.getId());
 
 	}
 
 	@PutMapping("/{commentId}")
 	public void updateComment(@PathVariable Long gameId, @PathVariable Long boardId, @PathVariable Long commentId,
 		@RequestBody @Valid CommentSaveRequest commentSaveRequest, @CurrentUser UserPrincipal userPrincipal) {
-		commentService.updateComment(boardId, commentId, commentSaveRequest, userPrincipal);
+		commentService.updateComment(boardId, commentId, commentSaveRequest, userPrincipal.getId());
 	}
 
 	@DeleteMapping("/{commentId}")
 	public void deleteComment(@PathVariable Long gameId, @PathVariable Long boardId, @PathVariable Long commentId,
 		@CurrentUser UserPrincipal userPrincipal) {
-		commentService.deleteComment(boardId, commentId, userPrincipal);
+		commentService.deleteComment(boardId, commentId, userPrincipal.getId());
 	}
 }

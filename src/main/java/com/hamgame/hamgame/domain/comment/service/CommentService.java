@@ -14,7 +14,6 @@ import com.hamgame.hamgame.domain.user.entity.User;
 import com.hamgame.hamgame.domain.user.entity.repository.UserRepository;
 import com.hamgame.hamgame.exception.CustomException;
 import com.hamgame.hamgame.exception.payload.ErrorCode;
-import com.hamgame.hamgame.security.auth.UserPrincipal;
 
 import lombok.RequiredArgsConstructor;
 
@@ -26,8 +25,8 @@ public class CommentService {
 
 	private final UserRepository userRepository;
 
-	public void createComment(Long boardId, CommentSaveRequest commentSaveRequest, UserPrincipal userPrincipal) {
-		User user = userRepository.findById(userPrincipal.getId())
+	public void createComment(Long boardId, CommentSaveRequest commentSaveRequest, Long userId) {
+		User user = userRepository.findById(userId)
 			.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 		Board board = boardRepository.findById(boardId)
 			.orElseThrow(() -> new CustomException(ErrorCode.BOARD_NOT_FOUND));
@@ -37,19 +36,19 @@ public class CommentService {
 
 	@Transactional
 	public void updateComment(Long boardId, Long commentId, CommentSaveRequest commentSaveRequest,
-		UserPrincipal userPrincipal) {
+		Long userId) {
 		Comment comment = commentRepository.findByCommentIdAndBoard_BoardId(commentId, boardId)
 			.orElseThrow(() -> new CustomException(ErrorCode.COMMENT_NOT_FOUND));
-		User user = userRepository.findById(userPrincipal.getId())
+		User user = userRepository.findById(userId)
 			.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 		isAuthorOfComment(comment, user);
 		comment.updateComment(commentSaveRequest.getComment());
 	}
 
-	public void deleteComment(Long boardId, Long commentId, UserPrincipal userPrincipal) {
+	public void deleteComment(Long boardId, Long commentId, Long userId) {
 		Comment comment = commentRepository.findByCommentIdAndBoard_BoardId(commentId, boardId)
 			.orElseThrow(RuntimeException::new);
-		User user = userRepository.findById(userPrincipal.getId())
+		User user = userRepository.findById(userId)
 			.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 		isAuthorOfComment(comment, user);
 		commentRepository.delete(comment);

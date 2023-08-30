@@ -19,7 +19,6 @@ import com.hamgame.hamgame.domain.user.entity.User;
 import com.hamgame.hamgame.domain.user.entity.repository.UserRepository;
 import com.hamgame.hamgame.exception.CustomException;
 import com.hamgame.hamgame.exception.payload.ErrorCode;
-import com.hamgame.hamgame.security.auth.UserPrincipal;
 
 import lombok.RequiredArgsConstructor;
 
@@ -46,9 +45,9 @@ public class BoardService {
 		return BoardDto.of(board);
 	}
 
-	public void createBoard(Long gameId, BoardSaveRequest boardSaveRequest, UserPrincipal userPrincipal) {
+	public void createBoard(Long gameId, BoardSaveRequest boardSaveRequest, Long userId) {
 		Game game = gameRepository.findById(gameId).orElseThrow(() -> new CustomException(ErrorCode.GAME_NOT_FOUND));
-		User user = userRepository.findById(userPrincipal.getId())
+		User user = userRepository.findById(userId)
 			.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
 		Board board = boardSaveRequest.toEntity(game, user);
@@ -56,10 +55,10 @@ public class BoardService {
 	}
 
 	@Transactional
-	public void updateBoard(Long gameId, Long boardId, BoardSaveRequest boardSaveRequest, UserPrincipal userPrincipal) {
+	public void updateBoard(Long gameId, Long boardId, BoardSaveRequest boardSaveRequest, Long userId) {
 		Board board = boardRepository.findByBoardIdAndGame_GameId(boardId, gameId)
 			.orElseThrow(() -> new CustomException(ErrorCode.BOARD_NOT_FOUND));
-		User user = userRepository.findById(userPrincipal.getId())
+		User user = userRepository.findById(userId)
 			.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
 		isAuthorOfPost(board, user);
@@ -68,10 +67,10 @@ public class BoardService {
 			boardSaveRequest.getBoardCategory());
 	}
 
-	public void deleteBoard(Long gameId, Long boardId, UserPrincipal userPrincipal) {
+	public void deleteBoard(Long gameId, Long boardId, Long userId) {
 		Board board = boardRepository.findByBoardIdAndGame_GameId(boardId, gameId)
 			.orElseThrow(() -> new CustomException(ErrorCode.BOARD_NOT_FOUND));
-		User user = userRepository.findById(userPrincipal.getId())
+		User user = userRepository.findById(userId)
 			.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 		isAuthorOfPost(board, user);
 		boardRepository.delete(board);
