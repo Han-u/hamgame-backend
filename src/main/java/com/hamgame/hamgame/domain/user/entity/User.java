@@ -18,6 +18,9 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.hamgame.hamgame.domain.BaseTimeEntity;
 import com.hamgame.hamgame.domain.game.entity.Game;
@@ -32,6 +35,8 @@ import lombok.NoArgsConstructor;
 @Getter
 @Builder
 @Entity
+@Where(clause = "is_deleted = false")
+@SQLDelete(sql = "UPDATE user SET is_deleted = true WHERE id = ?")
 public class User extends BaseTimeEntity {
 
 	@Id
@@ -55,6 +60,8 @@ public class User extends BaseTimeEntity {
 	@Enumerated(EnumType.STRING)
 	private Provider provider;
 
+	private boolean is_deleted;
+
 	@ManyToMany(
 		fetch = FetchType.LAZY,
 		cascade = {
@@ -66,6 +73,12 @@ public class User extends BaseTimeEntity {
 		joinColumns = {@JoinColumn(name = "user_id")},
 		inverseJoinColumns = {@JoinColumn(name = "game_id")})
 	private Set<Game> games = new HashSet<>();
+
+	public void updateInfo(String nickname, String bio, String imageUrl) {
+		this.nickname = nickname;
+		this.bio = bio;
+		this.imageUrl = imageUrl;
+	}
 
 	public void updateName(String name) {
 		this.name = name;
