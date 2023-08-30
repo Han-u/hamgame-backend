@@ -36,7 +36,9 @@ public class SecurityConfig {
 
 	@Bean
 	public WebSecurityCustomizer webSecurityCustomizer() {
-		return (web) -> web.ignoring().antMatchers("/swagger-ui/**");
+		return (web) -> web.ignoring().antMatchers("/v3/api-docs", "/configuration/ui",
+			"/swagger-resources", "/configuration/security",
+			"/swagger-ui.html", "/webjars/**", "/swagger/**", "/swagger-ui/**");
 	}
 
 	@Bean
@@ -68,6 +70,7 @@ public class SecurityConfig {
 			.antMatchers("/login/**").permitAll()
 			.antMatchers("/auth/**").permitAll()
 			.antMatchers("/oauth2/**").permitAll()
+			.antMatchers("/swagger-resources/**").permitAll()
 			.anyRequest().authenticated() // 나머지 요청들은 인증없이 접근 X
 			.and()
 
