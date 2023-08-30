@@ -15,12 +15,16 @@ public class UserDto {
 	private Long id;
 	private String email;
 	private String nickname;
+	private String bio;
+	private String imageUrl;
 
 	public static UserDto of(User user) {
 		return UserDto.builder()
 			.id(user.getId())
 			.email(user.getEmail())
 			.nickname(user.getNickname())
+			.bio(user.getBio())
+			.imageUrl(user.getImageUrl())
 			.build();
 	}
 }
