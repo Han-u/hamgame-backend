@@ -27,6 +27,7 @@ public class FavoriteService {
 
 	private final GameRepository gameRepository;
 
+	@Transactional(readOnly = true)
 	public List<GameDto> getFavoriteGameList(Long userId) {
 		User user = userRepository.findById(userId)
 			.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));

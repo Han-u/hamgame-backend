@@ -11,6 +11,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.hamgame.hamgame.domain.crawler.util.CrawlerFactory;
 import com.hamgame.hamgame.domain.game.entity.Game;
@@ -34,6 +35,7 @@ public class GameNoticeService {
 
 	private final GameNoticeConfigRepository gameNoticeConfigRepository;
 
+	@Transactional(readOnly = true)
 	public Page<GameNoticeDto> getMyGameNoticeList(Pageable pageable, Long userId) {
 		User user = userRepository.findById(userId)
 			.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));

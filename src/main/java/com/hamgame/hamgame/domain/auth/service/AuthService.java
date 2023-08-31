@@ -4,6 +4,7 @@ import java.util.Objects;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.hamgame.hamgame.domain.auth.dto.TokenDto;
 import com.hamgame.hamgame.domain.auth.entity.RefreshToken;
@@ -21,6 +22,7 @@ public class AuthService {
 	private final JwtTokenProvider jwtTokenProvider;
 	private final UserRepository userRepository;
 
+	@Transactional
 	public TokenDto refresh(String refreshToken) {
 		if (!isValidToken(refreshToken)) {
 			throw new RuntimeException();
@@ -36,6 +38,7 @@ public class AuthService {
 		return TokenDto.of(accessToken, newRefreshToken);
 	}
 
+	@Transactional(readOnly = true)
 	public boolean isValidToken(String refreshToken) {
 		jwtTokenProvider.validateToken(refreshToken);
 		RefreshToken tokenEntity = refreshTokenRepository.findByRefreshToken(refreshToken)
