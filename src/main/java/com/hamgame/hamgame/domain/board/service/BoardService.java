@@ -30,6 +30,7 @@ public class BoardService {
 	private final BoardRepository boardRepository;
 	private final UserRepository userRepository;
 
+	@Transactional(readOnly = true)
 	public Page<BoardListDto> getBoardList(Long gameId, Pageable pageable, BoardCategory boardCategory) {
 		if (boardCategory == null) {
 			return boardRepository.findByGame_GameId(gameId, pageable).map(BoardListDto::of);
@@ -39,12 +40,14 @@ public class BoardService {
 		}
 	}
 
+	@Transactional(readOnly = true)
 	public BoardDto getBoard(Long gameId, Long boardId) {
 		Board board = boardRepository.findByBoardIdAndGame_GameId(boardId, gameId)
 			.orElseThrow(() -> new CustomException(ErrorCode.BOARD_NOT_FOUND));
 		return BoardDto.of(board);
 	}
 
+	@Transactional
 	public void createBoard(Long gameId, BoardSaveRequest boardSaveRequest, Long userId) {
 		Game game = gameRepository.findById(gameId).orElseThrow(() -> new CustomException(ErrorCode.GAME_NOT_FOUND));
 		User user = userRepository.findById(userId)
@@ -67,6 +70,7 @@ public class BoardService {
 			boardSaveRequest.getBoardCategory());
 	}
 
+	@Transactional
 	public void deleteBoard(Long gameId, Long boardId, Long userId) {
 		Board board = boardRepository.findByBoardIdAndGame_GameId(boardId, gameId)
 			.orElseThrow(() -> new CustomException(ErrorCode.BOARD_NOT_FOUND));
