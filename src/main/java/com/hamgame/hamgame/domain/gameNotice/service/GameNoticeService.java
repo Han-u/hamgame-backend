@@ -7,12 +7,15 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.hamgame.hamgame.domain.RestPage;
 import com.hamgame.hamgame.domain.crawler.util.CrawlerFactory;
 import com.hamgame.hamgame.domain.game.entity.Game;
 import com.hamgame.hamgame.domain.gameNotice.dto.GameNoticeConfigDto;
@@ -35,16 +38,17 @@ public class GameNoticeService {
 
 	private final GameNoticeConfigRepository gameNoticeConfigRepository;
 
+	@Cacheable(value = "favoriteGameNotice", key = "#userId")
 	@Transactional(readOnly = true)
 	public Page<GameNoticeDto> getMyGameNoticeList(Pageable pageable, Long userId) {
 		User user = userRepository.findById(userId)
 			.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 		Set<Game> games = user.getGames();
-		return gameNoticeRepository.findByGameIn(games, pageable).map(GameNoticeDto::of);
-
+		return new RestPage<>(gameNoticeRepository.findByGameIn(games, pageable).map(GameNoticeDto::of));
 	}
 
 	@Scheduled(cron = "0 0 0 * * *", zone = "Asia/Seoul")
+	@CacheEvict(value = "favoriteGameNotice", allEntries = true)
 	public void runCrawler() {
 		// 실행할 크롤러 설정 정보
 		List<GameNoticeConfigDto> config = gameNoticeConfigRepository.findAll()

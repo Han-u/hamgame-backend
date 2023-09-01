@@ -3,6 +3,9 @@ package com.hamgame.hamgame.domain.favorite.service;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,6 +31,7 @@ public class FavoriteService {
 	private final GameRepository gameRepository;
 
 	@Transactional(readOnly = true)
+	@Cacheable(value = "favoriteGames", key = "#userId")
 	public List<GameDto> getFavoriteGameList(Long userId) {
 		User user = userRepository.findById(userId)
 			.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
@@ -35,6 +39,12 @@ public class FavoriteService {
 	}
 
 	@Transactional
+	@Caching(
+		evict = {
+			@CacheEvict(value = "favoriteGames", key = "#userId"),
+			@CacheEvict(value = "favoriteGameNotice", key = "#userId")
+		}
+	)
 	public void addGame(FavAddRequest requestDto, Long userId) {
 		User user = userRepository.findById(userId)
 			.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
@@ -43,6 +53,12 @@ public class FavoriteService {
 	}
 
 	@Transactional
+	@Caching(
+		evict = {
+			@CacheEvict(value = "favoriteGames", key = "#userId"),
+			@CacheEvict(value = "favoriteGameNotice", key = "#userId")
+		}
+	)
 	public void updateGames(FavUpdateRequest requestDto, Long userId) {
 		User user = userRepository.findById(userId)
 			.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
@@ -51,6 +67,12 @@ public class FavoriteService {
 	}
 
 	@Transactional
+	@Caching(
+		evict = {
+			@CacheEvict(value = "favoriteGames", key = "#userId"),
+			@CacheEvict(value = "favoriteGameNotice", key = "#userId")
+		}
+	)
 	public void removeGame(FavRemoveRequest requestDto, Long userId) {
 		User user = userRepository.findById(userId)
 			.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
