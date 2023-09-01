@@ -18,6 +18,7 @@ public class UserService {
 
 	private final UserRepository userRepository;
 
+	@Transactional(readOnly = true)
 	public UserDto getUserInfo(Long id) {
 		User user = userRepository.findById(id)
 			.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
@@ -31,6 +32,7 @@ public class UserService {
 		user.updateInfo(userSaveRequest.getNickname(), user.getBio(), userSaveRequest.getImageUrl());
 	}
 
+	@Transactional
 	public void deleteUser(Long id) {
 		User user = userRepository.findById(id)
 			.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));

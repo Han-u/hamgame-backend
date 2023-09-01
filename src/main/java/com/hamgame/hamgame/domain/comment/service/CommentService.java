@@ -25,6 +25,7 @@ public class CommentService {
 
 	private final UserRepository userRepository;
 
+	@Transactional
 	public void createComment(Long boardId, CommentSaveRequest commentSaveRequest, Long userId) {
 		User user = userRepository.findById(userId)
 			.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
@@ -45,6 +46,7 @@ public class CommentService {
 		comment.updateComment(commentSaveRequest.getComment());
 	}
 
+	@Transactional
 	public void deleteComment(Long boardId, Long commentId, Long userId) {
 		Comment comment = commentRepository.findByCommentIdAndBoard_BoardId(commentId, boardId)
 			.orElseThrow(RuntimeException::new);

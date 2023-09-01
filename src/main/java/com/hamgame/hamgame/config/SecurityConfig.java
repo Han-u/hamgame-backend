@@ -69,6 +69,7 @@ public class SecurityConfig {
 			.authorizeRequests() // HttpServletRequest 사용한는 요청들에 대한 접근 제한 설정
 			.antMatchers("/login/**").permitAll()
 			.antMatchers("/auth/**").permitAll()
+			.antMatchers("/health").permitAll()
 			.antMatchers("/oauth2/**").permitAll()
 			.antMatchers("/swagger-resources/**").permitAll()
 			.anyRequest().authenticated() // 나머지 요청들은 인증없이 접근 X
