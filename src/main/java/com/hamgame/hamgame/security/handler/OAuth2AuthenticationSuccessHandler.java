@@ -34,6 +34,10 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
 	@Value("${spring.jwt.authorized-redirect-uris}")
 	private List<String> authorizedRedirectUris;
 
+	/*
+	 * OAuth2Service에서 사용자 정보 처리까지 성공했을 때 최종적으로 실행되는 handler
+	 * 인증 성공시 프론트로 jwt 토큰 반환
+	 */
 	@Override
 	public void onAuthenticationSuccess(
 		HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {

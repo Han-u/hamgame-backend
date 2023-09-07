@@ -14,15 +14,21 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 
 @Component
 @RequiredArgsConstructor
+@Log4j2
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 	private final JwtTokenProvider jwtTokenProvider;
 
 	public static final String BEARER = "Bearer ";
 	public static final String AUTHORIZATION = "Authorization";
 
+	/*
+	 * OncePerRequestFilter: Request 이전에 1회만 실행되는 필터
+	 * 토큰 검증을 성공하면 SecurityContext에 Authentication 저장하고 다음 필터 체인을 실행한다
+	 */
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
 		FilterChain filterChain) throws ServletException, IOException {
@@ -40,6 +46,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 	private String getJwtFromRequest(HttpServletRequest request) {
 		String bearerToken = request.getHeader(AUTHORIZATION);
 		if (isValidHeader(bearerToken)) {
+			log.info("bearerToken = {}", bearerToken.substring(BEARER.length()));
 			return bearerToken.substring(BEARER.length());
 		}
 		return bearerToken;
