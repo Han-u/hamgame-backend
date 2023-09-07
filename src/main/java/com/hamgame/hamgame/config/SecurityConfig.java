@@ -83,7 +83,7 @@ public class SecurityConfig {
 
 			//소셜 로그인 설정
 			.oauth2Login()
-			.authorizationEndpoint().baseUri("/oauth2/authorize") // 소셜 로그인 url
+			.authorizationEndpoint().baseUri("/oauth2/authorize") // 프론트에서 요청하는 소셜 로그인 url
 			.authorizationRequestRepository(cookieAuthorizationRequestRepository) // 인증 요청을 cookie에 저장
 			.and()
 			.redirectionEndpoint().baseUri("/oauth2/callback/*") // 소셜 인증 후 redirect url

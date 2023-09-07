@@ -47,7 +47,7 @@ public class GameNoticeService {
 		return new RestPage<>(gameNoticeRepository.findByGameIn(games, pageable).map(GameNoticeDto::of));
 	}
 
-	@Scheduled(cron = "0 0 0 * * *", zone = "Asia/Seoul")
+	@Scheduled(cron = "5 0 0 * * *", zone = "Asia/Seoul")
 	@CacheEvict(value = "favoriteGameNotice", allEntries = true)
 	public void runCrawler() {
 		// 실행할 크롤러 설정 정보

@@ -4,20 +4,20 @@ import java.time.Duration;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.CacheManager;
-import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.data.redis.cache.RedisCacheConfiguration;
 import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
+import org.springframework.data.redis.core.RedisKeyValueAdapter;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.repository.configuration.EnableRedisRepositories;
 import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.RedisSerializationContext;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
-import org.springframework.scheduling.annotation.EnableScheduling;
-import org.springframework.scheduling.annotation.Scheduled;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -44,7 +44,7 @@ public class RedisConfig {
 	 * 날짜/시간 탕입 데이터를 처리하기 위해 JavaTimeModule을 추가해준다.
 	 */
 	@Bean
-	public ObjectMapper objectMapper(){
+	public ObjectMapper objectMapper() {
 		ObjectMapper mapper = new ObjectMapper();
 		mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 		mapper.registerModule(new JavaTimeModule());
@@ -52,15 +52,15 @@ public class RedisConfig {
 	}
 
 	/*
-	* Redis Connection Factory Library
-	* 1. Jedis - 멀티쓰레드 환경에서 쓰레드 안전 보장 X
-	*          - Connection pool 사용으로 성능, 안전성 개선
-	*          - Lettuce에 비해 하드웨어 자원 많이 필요
-	* 		   - 비동기 불가능
-	* 2. Lettuce - Netty 기반 redis client library
-	* 			 - 비동기 지원으로 우수한 성능
-	* 			 - TPS, 자원사용량 모두 Jedis에 비해 우수
-	*/
+	 * Redis Connection Factory Library
+	 * 1. Jedis - 멀티쓰레드 환경에서 쓰레드 안전 보장 X
+	 *          - Connection pool 사용으로 성능, 안전성 개선
+	 *          - Lettuce에 비해 하드웨어 자원 많이 필요
+	 * 		   - 비동기 불가능
+	 * 2. Lettuce - Netty 기반 redis client library
+	 * 			 - 비동기 지원으로 우수한 성능
+	 * 			 - TPS, 자원사용량 모두 Jedis에 비해 우수
+	 */
 	@Bean
 	public RedisConnectionFactory redisConnectionFactory() {
 		// RedisClusterConfiguration redisClusterConfiguration = new RedisClusterConfiguration(clusterNodes);
@@ -80,13 +80,12 @@ public class RedisConfig {
 	 * setEnableTransactionSupport: transaction을 허용한다.
 	 */
 	@Bean
-	public RedisTemplate<String, Object> redisTemplate(ObjectMapper objectMapper){
+	public RedisTemplate<String, Object> redisTemplate(ObjectMapper objectMapper) {
 		GenericJackson2JsonRedisSerializer serializer = new GenericJackson2JsonRedisSerializer(objectMapper);
 
 		RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
 		redisTemplate.setConnectionFactory(redisConnectionFactory());
 		redisTemplate.setKeySerializer(new StringRedisSerializer());
-		// redisTemplate.setValueSerializer(new StringRedisSerializer());
 		redisTemplate.setValueSerializer(serializer);
 		redisTemplate.setHashKeySerializer(new StringRedisSerializer());
 		redisTemplate.setValueSerializer(serializer);
@@ -110,12 +109,13 @@ public class RedisConfig {
 			.entryTtl(Duration.ofMinutes(30))
 			.serializeKeysWith(
 				RedisSerializationContext.SerializationPair
-				.fromSerializer(new StringRedisSerializer()))
+					.fromSerializer(new StringRedisSerializer()))
 			.serializeValuesWith(
 				RedisSerializationContext.SerializationPair
-				.fromSerializer(new GenericJackson2JsonRedisSerializer(objectMapper)));
+					.fromSerializer(new GenericJackson2JsonRedisSerializer(objectMapper)));
 		return RedisCacheManager.RedisCacheManagerBuilder.fromConnectionFactory(cf)
 			.cacheDefaults(redisCacheConfiguration)
 			.build();
 	}
+
 }

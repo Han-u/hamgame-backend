@@ -21,6 +21,9 @@ import lombok.RequiredArgsConstructor;
 public class OAuth2AuthenticationFailureHandler extends SimpleUrlAuthenticationFailureHandler {
 	private final CookieAuthorizationRequestRepository cookieAuthorizationRequestRepository;
 
+	/*
+	 * 인증 실패시 프론트에 지정된 주소로 리다이렉트하여 실패 처리
+	 */
 	@Override
 	public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
 		AuthenticationException authenticationException) throws
