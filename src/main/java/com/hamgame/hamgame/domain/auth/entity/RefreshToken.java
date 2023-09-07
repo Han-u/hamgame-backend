@@ -1,29 +1,23 @@
 package com.hamgame.hamgame.domain.auth.entity;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.redis.core.RedisHash;
 
-import com.hamgame.hamgame.domain.BaseTimeEntity;
-
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 @Getter
-@Entity
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
-public class RefreshToken extends BaseTimeEntity {
+@RedisHash(value = "refreshToken", timeToLive = 30L)
+//1209600L
+public class RefreshToken {
 	@Id
 	private Long userId;
 
-	@Column(nullable = false)
 	private String refreshToken;
 
-	public void updateRefreshToken(String refreshToken) {
+	@Builder
+	public RefreshToken(Long userId, String refreshToken) {
+		this.userId = userId;
 		this.refreshToken = refreshToken;
 	}
 }
