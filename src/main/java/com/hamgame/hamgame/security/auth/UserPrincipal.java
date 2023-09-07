@@ -50,6 +50,10 @@ public class UserPrincipal implements OAuth2User, UserDetails {
 		this.attributes = attributes;
 	}
 
+	public Long getId() {
+		return id;
+	}
+
 	@Override
 	public Map<String, Object> getAttributes() {
 		return attributes;
