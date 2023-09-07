@@ -12,8 +12,8 @@ public class Kakao extends OAuth2UserInfo {
 	}
 
 	@Override
-	public String getProvider() {
-		return Provider.KAKAO.toString();
+	public Provider getProvider() {
+		return Provider.KAKAO;
 	}
 
 	@Override

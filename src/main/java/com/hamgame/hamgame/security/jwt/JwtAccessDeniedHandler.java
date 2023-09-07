@@ -12,6 +12,9 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class JwtAccessDeniedHandler implements AccessDeniedHandler {
+	/*
+	 * 토큰 유효기간 지났거나, 유저 권한 올바르지 않을 때 403 FORBIDDEN 반환
+	 */
 
 	@Override
 	public void handle(HttpServletRequest request, HttpServletResponse response,

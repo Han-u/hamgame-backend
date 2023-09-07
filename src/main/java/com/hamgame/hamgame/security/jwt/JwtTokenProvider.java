@@ -7,10 +7,11 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
+import com.hamgame.hamgame.security.auth.CustomUserDetailsService;
 import com.hamgame.hamgame.security.auth.UserPrincipal;
-import com.hamgame.hamgame.domain.user.entity.User;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -22,9 +23,11 @@ import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 
 @RequiredArgsConstructor
 @Component
+@Log4j2
 public class JwtTokenProvider implements InitializingBean {
 
 	@Value("${spring.jwt.access.expiration}")
@@ -38,44 +41,52 @@ public class JwtTokenProvider implements InitializingBean {
 
 	private Key key;
 
+	private final CustomUserDetailsService customUserDetailsService;
+
+	/*
+	 * Bean 생성되고 의존성 주입까지 끝낸 후 주입받은 secretkey를 base64 decode하여
+	 * 키 바이트 배열로 SecretKey 인스턴스 생성
+	 */
 	@Override
 	public void afterPropertiesSet() {
 		byte[] keyBytes = Decoders.BASE64.decode(secretKey);
 		this.key = Keys.hmacShaKeyFor(keyBytes);
 	}
 
-	public String createAccessToken(Authentication authentication) {
-		UserPrincipal userPrincipal = (UserPrincipal)authentication.getPrincipal();
+	public String createToken(Claims claims, Long expire) {
 		Date now = new Date();
-		Date accessValidity = new Date(now.getTime() + accessTokenExpire);
-		Claims claims = Jwts.claims().setSubject(Long.toString(userPrincipal.getId()));
-		claims.put("email", userPrincipal.getEmail());
-
 		return Jwts.builder()
 			.setClaims(claims)
 			.setIssuedAt(now)
-			.setExpiration(accessValidity)
+			.setExpiration(new Date(now.getTime() + expire))
 			.signWith(key, SignatureAlgorithm.HS256)
 			.compact();
 	}
 
+	// Access Token 생성
+	public String createAccessToken(Authentication authentication) {
+		UserPrincipal userPrincipal = (UserPrincipal)authentication.getPrincipal();
+		Claims claims = Jwts.claims().setSubject(Long.toString(userPrincipal.getId()));
+		claims.put("email", userPrincipal.getEmail());
+
+		return createToken(claims, accessTokenExpire);
+	}
+
+	// Refresh Token 생성
 	public String createRefreshToken(Authentication authentication) {
 		UserPrincipal userPrincipal = (UserPrincipal)authentication.getPrincipal();
-		Date now = new Date();
-		Date refreshValidity = new Date(now.getTime() + refreshTokenExpire);
+		Claims claims = Jwts.claims().setSubject(Long.toString(userPrincipal.getId()));
 
-		return Jwts.builder()
-			.setSubject(Long.toString(userPrincipal.getId()))
-			.setExpiration(refreshValidity)
-			.signWith(key, SignatureAlgorithm.HS256)
-			.compact();
+		return createToken(claims, refreshTokenExpire);
 	}
 
+	// Token에서 Id 추출
 	public Long getUserIdFromToken(String token) {
 		Claims claims = getClaims(token);
 		return Long.parseLong(claims.getSubject());
 	}
 
+	// Token에서 email 추출
 	public String getUserEmailFromToken(String token) {
 		Claims claims = getClaims(token);
 		return (String)claims.get("email");
@@ -89,18 +100,12 @@ public class JwtTokenProvider implements InitializingBean {
 			.getBody();
 	}
 
+	// JWT 토큰을 Decode하여 Authentication 반환
 	public UsernamePasswordAuthenticationToken getAuthentication(String token) {
 		Long userId = getUserIdFromToken(token);
 		String email = getUserEmailFromToken(token);
-		// List<GrantedAuthority> authorities = Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER"));
-		// User principal = new User(userId, "", authorities);
-		UserPrincipal userPrincipal = UserPrincipal.create(userId, email);
-		return new UsernamePasswordAuthenticationToken(userPrincipal, null, userPrincipal.getAuthorities());
-	}
 
-	// 나중에 지울것
-	public UsernamePasswordAuthenticationToken getAuthenticationByUser(User user) {
-		UserPrincipal userPrincipal = UserPrincipal.create(user.getId(), user.getEmail());
+		UserDetails userPrincipal = customUserDetailsService.loadUserByIdAndEmail(userId, email);
 		return new UsernamePasswordAuthenticationToken(userPrincipal, null, userPrincipal.getAuthorities());
 	}
 
@@ -109,20 +114,17 @@ public class JwtTokenProvider implements InitializingBean {
 			Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
 			return true;
 		} catch (SignatureException e) {
-			System.out.println("Signature");
-			//            log.error("유효하지 않은 JWT 서명");
+			log.error("유효하지 않은 JWT 서명");
 		} catch (MalformedJwtException e) {
-			System.out.println("Malforned");
-			//            log.error("유효하지 않은 JWT");
+			log.error("유효하지 않은 JWT");
 		} catch (ExpiredJwtException e) {
-			System.out.println("expired");
-			//            log.error("만료된 JWT");
+			log.error("만료된 JWT");
 		} catch (IllegalArgumentException e) {
 			System.out.println("illegal");
-			//            log.error("잘못된 토큰");
+			log.error("잘못된 토큰");
 		} catch (UnsupportedJwtException e) {
 			System.out.println("unsopprted");
-			//            log.error("지원하지 않는 JWT");
+			log.error("지원하지 않는 JWT");
 		}
 		return false;
 	}
