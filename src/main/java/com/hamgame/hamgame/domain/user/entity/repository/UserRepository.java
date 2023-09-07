@@ -9,6 +9,10 @@ import com.hamgame.hamgame.domain.user.entity.User;
 
 public interface UserRepository extends JpaRepository<User, Long> {
 	Optional<User> findByEmailAndProvider(String email, Provider provider);
+	
+	Optional<User> findByIdAndEmail(Long userId, String email);
 
-	Optional<User> findByEmail(String email);
+	boolean existsByEmailAndProvider(String email, Provider provider);
+
+	boolean existsByNickname(String nickname);
 }

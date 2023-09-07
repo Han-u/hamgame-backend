@@ -13,6 +13,8 @@ public enum ErrorCode {
 	GAME_NOT_FOUND(404, "G001", "게임을 찾을 수 없습니다"),
 
 	USER_NOT_FOUND(404, "U001", "유저를 찾을 수 없습니다."),
+	USER_EMAIL_DUPLICATE(409, "U002", "사용중인 이메일 입니다."),
+	USER_NICKNAME_DUPLICATE(409, "U003", "사용중인 닉네임 입니다."),
 
 	BOARD_NOT_FOUND(404, "B001", "게시글을 찾을 수 없습니다"),
 
