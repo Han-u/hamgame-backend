@@ -9,8 +9,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
-import com.hamgame.hamgame.security.auth.UserPrincipal;
 import com.hamgame.hamgame.domain.user.entity.User;
+import com.hamgame.hamgame.security.auth.UserPrincipal;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -22,9 +22,11 @@ import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 
 @RequiredArgsConstructor
 @Component
+@Log4j2
 public class JwtTokenProvider implements InitializingBean {
 
 	@Value("${spring.jwt.access.expiration}")
@@ -109,20 +111,17 @@ public class JwtTokenProvider implements InitializingBean {
 			Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
 			return true;
 		} catch (SignatureException e) {
-			System.out.println("Signature");
-			//            log.error("유효하지 않은 JWT 서명");
+		   log.error("유효하지 않은 JWT 서명");
 		} catch (MalformedJwtException e) {
-			System.out.println("Malforned");
-			//            log.error("유효하지 않은 JWT");
+		   log.error("유효하지 않은 JWT");
 		} catch (ExpiredJwtException e) {
-			System.out.println("expired");
-			//            log.error("만료된 JWT");
+		   log.error("만료된 JWT");
 		} catch (IllegalArgumentException e) {
 			System.out.println("illegal");
-			//            log.error("잘못된 토큰");
+		   log.error("잘못된 토큰");
 		} catch (UnsupportedJwtException e) {
 			System.out.println("unsopprted");
-			//            log.error("지원하지 않는 JWT");
+		   log.error("지원하지 않는 JWT");
 		}
 		return false;
 	}
