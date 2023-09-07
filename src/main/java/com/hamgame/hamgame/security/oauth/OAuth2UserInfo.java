@@ -2,6 +2,8 @@ package com.hamgame.hamgame.security.oauth;
 
 import java.util.Map;
 
+import com.hamgame.hamgame.domain.user.entity.Provider;
+
 public abstract class OAuth2UserInfo {
 	protected Map<String, Object> attributes;
 
@@ -9,7 +11,7 @@ public abstract class OAuth2UserInfo {
 		this.attributes = attributes;
 	}
 
-	public abstract String getProvider();
+	public abstract Provider getProvider();
 
 	public abstract String getId();
 

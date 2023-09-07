@@ -80,14 +80,6 @@ public class User extends BaseTimeEntity {
 		this.imageUrl = imageUrl;
 	}
 
-	public void updateName(String name) {
-		this.name = name;
-	}
-
-	public void updateImageUrl(String imageUrl) {
-		this.imageUrl = imageUrl;
-	}
-
 	public void addGames(List<Game> newGames) {
 		this.games.addAll(newGames);
 	}

@@ -1,8 +1,5 @@
 package com.hamgame.hamgame.security.oauth;
 
-import java.util.Optional;
-
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
@@ -21,6 +18,10 @@ import lombok.RequiredArgsConstructor;
 public class OAuth2UserService extends DefaultOAuth2UserService {
 	private final UserRepository userRepository;
 
+	/*
+	 * 리소스 서버에서 사용자 정보를 받아와 최종적으로 서버에서 사용자 정보에 대한 처리를 함
+	 * provider별 정보 파싱을 통해 사용자 가입 여부 확인 후 비회원이면 계정 생성
+	 */
 	@Override
 	public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
 		OAuth2User oAuth2User = super.loadUser(userRequest);
@@ -31,41 +32,21 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
 			throw new RuntimeException();
 		}
 
-		Optional<User> optionalUser = userRepository.findByEmailAndProvider(userInfo.getEmail(), provider);
-		User user;
-
-		if (optionalUser.isPresent()) {
-			user = updateUser(optionalUser.get(), userInfo);
-		} else {
-			user = createUser(userInfo, provider);
-		}
+		User user = userRepository.findByEmailAndProvider(userInfo.getEmail(), provider)
+			.orElseGet(() -> createUser(userInfo));
 
 		return UserPrincipal.create(user, oAuth2User.getAttributes());
 	}
 
-	public OAuth2User loadUserById(Long id) {
-		User user = userRepository.findById(id)
-			.orElseThrow(() ->
-				new UsernameNotFoundException("유저 정보를 찾을 수 없습니다.")
-			);
-
-		return UserPrincipal.create(user);
-	}
-
-	public User createUser(OAuth2UserInfo userInfo, Provider provider) {
+	public User createUser(OAuth2UserInfo userInfo) {
 		User user = User.builder()
 			.name(userInfo.getName())
 			.email(userInfo.getEmail())
 			.nickname(userInfo.getName())
 			.imageUrl(userInfo.getImageUrl())
-			.provider(provider)
+			.provider(userInfo.getProvider())
 			.build();
 		return userRepository.save(user);
 	}
 
-	public User updateUser(User user, OAuth2UserInfo userInfo) {
-		user.updateName(userInfo.getName());
-		user.updateImageUrl(user.getImageUrl());
-		return userRepository.save(user);
-	}
 }
