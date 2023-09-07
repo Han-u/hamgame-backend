@@ -1,7 +1,13 @@
 package com.hamgame.hamgame.exception;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -24,4 +30,16 @@ public class GlobalExceptionHandler {
 			.build();
 		return new ResponseEntity<>(response, HttpStatus.valueOf(errorCode.getStatus()));
 	}
+
+	@ExceptionHandler(MethodArgumentNotValidException.class)
+	public ResponseEntity<?> handleValidationException(MethodArgumentNotValidException e) {
+		BindingResult bindingResult = e.getBindingResult();
+		Map<String, String> object = new HashMap<>();
+		
+		for (FieldError fieldError : bindingResult.getFieldErrors()) {
+			object.put(fieldError.getField(), fieldError.getDefaultMessage());
+		}
+		return new ResponseEntity<>(object, HttpStatus.BAD_REQUEST);
+	}
+
 }
