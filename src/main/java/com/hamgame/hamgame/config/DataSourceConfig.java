@@ -36,19 +36,29 @@ import lombok.RequiredArgsConstructor;
 public class DataSourceConfig {
 	private final Environment env;
 
+	/*
+	 * Master DataSource 생성
+	 * Spring Boot 2.0부터 Hikari cp default로 적용되어 type을 HikariDataSource로 설정
+	 * application.yml 파일 설정값 받와와 Hikari DataSource에 설정
+	 */
 	@Bean
 	@ConfigurationProperties(prefix = "spring.datasource.master.hikari")
 	public DataSource masterDataSource() {
 		return DataSourceBuilder.create().type(HikariDataSource.class).build();
 	}
 
+	/*
+	 * Slave DataSource 생성
+	 */
 	@Bean
 	@ConfigurationProperties(prefix = "spring.datasource.slave.hikari")
 	public DataSource slaveDataSource() {
 		return DataSourceBuilder.create().type(HikariDataSource.class).build();
 	}
 
-	// routing dataSource Bean
+	/*
+	 * 직접 생성한 DataSource 정보를 등록한다.
+	 */
 	@Bean
 	@DependsOn({"masterDataSource", "slaveDataSource"})
 	public DataSource routingDataSource(
@@ -67,15 +77,20 @@ public class DataSourceConfig {
 		return routingDataSource;
 	}
 
+	/*
+	 * transaction 시작 전에 dataSource connection을 가져와 끝날 때까지 같은 소스만 사용하여
+	 * query 실행 시점에 dataSourceConnection을 가져올 수 있도록 LazyConnection으로 설정한다.
+	 */
 	@Bean
 	@DependsOn("routingDataSource")
 	public LazyConnectionDataSourceProxy dataSource(DataSource routingDataSource) {
 		return new LazyConnectionDataSourceProxy(routingDataSource);
 	}
 
-	/**
-	 * JPA에서 사용할 EntityManagerFactory 설정
-	 * hibernate 설정 직접 주입
+	/*
+	 * hibernate 설정은 JpaBaseConfigutarion을 상속한 HibernateJpaConfiguration 클래스에 적용된다.
+	 * 현재 LocalContainerEntityManagerFactoryBean을 직접 등록하여 auto configuration이 불가능하기 때문에
+	 * JPA에서 사용할 EntityManagerFactory에 hibernate 설정 직접 주입해준다.
 	 */
 	@Primary
 	@Bean
@@ -86,6 +101,7 @@ public class DataSourceConfig {
 		em.setPackagesToScan("com.hamgame.hamgame.domain");
 
 		Map<String, Object> properties = new HashMap<>();
+		// 네이밍 전략을 camelCase -> snake_case로 변경한다.
 		properties.put("hibernate.physical_naming_strategy",
 			CamelCaseToUnderscoresNamingStrategy.class.getName());
 		properties.put("hibernate.implicit_naming_strategy",
@@ -101,7 +117,7 @@ public class DataSourceConfig {
 		return em;
 	}
 
-	/**
+	/*
 	 * JPA에서 사용할 TransactionManager 설정
 	 */
 	@Primary

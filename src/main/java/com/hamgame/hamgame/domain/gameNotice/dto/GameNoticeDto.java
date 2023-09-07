@@ -2,10 +2,6 @@ package com.hamgame.hamgame.domain.gameNotice.dto;
 
 import java.time.LocalDateTime;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import com.hamgame.hamgame.domain.game.dto.GameDto;
 import com.hamgame.hamgame.domain.gameNotice.entity.GameNotice;
 
@@ -32,8 +28,6 @@ public class GameNoticeDto {
 	@Schema(description = "이미지 url")
 	private String imageUrl;
 	@Schema(description = "공지 작성 일자")
-	@JsonSerialize(using = LocalDateTimeSerializer.class)
-	@JsonDeserialize(using = LocalDateTimeDeserializer.class)
 	private LocalDateTime postCreatedAt;
 	@Schema(description = "게임 정보")
 	private GameDto game;
