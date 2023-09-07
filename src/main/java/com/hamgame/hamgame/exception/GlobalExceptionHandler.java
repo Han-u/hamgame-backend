@@ -10,6 +10,10 @@ import com.hamgame.hamgame.exception.payload.ErrorResponse;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+	/*
+	 * @RestControllerAdvice: Exception 발생시 낚아채서 응답하는 역할을 함!
+	 * @ExceptionHandler: CustomException이 발생하는 모든 익셉션을 가로챔
+	 */
 
 	@ExceptionHandler(CustomException.class)
 	public ResponseEntity<?> handleCustomException(CustomException e) {
