@@ -1,7 +1,6 @@
 package com.hamgame.hamgame.domain.favorite.service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -33,9 +32,7 @@ public class FavoriteService {
 	@Transactional(readOnly = true)
 	@Cacheable(value = "favoriteGames", key = "#userId")
 	public List<GameDto> getFavoriteGameList(Long userId) {
-		User user = userRepository.findById(userId)
-			.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
-		return user.getGames().stream().map(GameDto::of).collect(Collectors.toList());
+		return gameRepository.findFavoriteGamesByUser(userId);
 	}
 
 	@Transactional

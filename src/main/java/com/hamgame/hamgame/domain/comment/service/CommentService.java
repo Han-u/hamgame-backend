@@ -27,8 +27,7 @@ public class CommentService {
 
 	@Transactional
 	public void createComment(Long boardId, CommentSaveRequest commentSaveRequest, Long userId) {
-		User user = userRepository.findById(userId)
-			.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+		User user = userRepository.getReferenceById(userId);
 		Board board = boardRepository.findById(boardId)
 			.orElseThrow(() -> new CustomException(ErrorCode.BOARD_NOT_FOUND));
 		Comment comment = commentSaveRequest.toEntity(board, user);
@@ -36,29 +35,28 @@ public class CommentService {
 	}
 
 	@Transactional
-	public void updateComment(Long boardId, Long commentId, CommentSaveRequest commentSaveRequest,
-		Long userId) {
-		Comment comment = commentRepository.findByCommentIdAndBoard_BoardId(commentId, boardId)
+	public void updateComment(Long boardId, Long commentId, CommentSaveRequest commentSaveRequest, Long userId) {
+		Comment comment = commentRepository.findByCommentIdAndBoardId(commentId, boardId)
 			.orElseThrow(() -> new CustomException(ErrorCode.COMMENT_NOT_FOUND));
-		User user = userRepository.findById(userId)
-			.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
-		isAuthorOfComment(comment, user);
+
+		isAuthorOfComment(comment, userId);
+
 		comment.updateComment(commentSaveRequest.getComment());
 	}
 
 	@Transactional
 	public void deleteComment(Long boardId, Long commentId, Long userId) {
-		Comment comment = commentRepository.findByCommentIdAndBoard_BoardId(commentId, boardId)
-			.orElseThrow(RuntimeException::new);
-		User user = userRepository.findById(userId)
-			.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
-		isAuthorOfComment(comment, user);
+		Comment comment = commentRepository.findByCommentIdAndBoardId(commentId, boardId)
+			.orElseThrow(() -> new CustomException(ErrorCode.COMMENT_NOT_FOUND));
+
+		isAuthorOfComment(comment, userId);
+
 		commentRepository.delete(comment);
 	}
 
-	public void isAuthorOfComment(Comment comment, User user) {
-		if (!Objects.equals(comment.getUser().getId(), user.getId())) {
-			throw new CustomException(ErrorCode.BAD_REQUEST);
+	public void isAuthorOfComment(Comment comment, Long userId) {
+		if (!Objects.equals(comment.getUser().getId(), userId)) {
+			throw new CustomException(ErrorCode.NOT_COMMENT_AUTHOR);
 		}
 	}
 }

@@ -4,18 +4,17 @@ import java.time.LocalDateTime;
 
 import com.hamgame.hamgame.domain.game.dto.GameDto;
 import com.hamgame.hamgame.domain.gameNotice.entity.GameNotice;
+import com.querydsl.core.annotations.QueryProjection;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Schema(description = "게임 공지 응답DTO")
 @Getter
-@Builder
 @NoArgsConstructor
-@AllArgsConstructor
+@Builder
 public class GameNoticeDto {
 	@Schema(description = "공지 번호")
 	private Long gameNoticeId;
@@ -53,5 +52,17 @@ public class GameNoticeDto {
 			.imageUrl(imageUrl)
 			.postCreatedAt(postCreatedAt)
 			.build();
+	}
+
+	@QueryProjection
+	public GameNoticeDto(Long gameNoticeId, String title, String noticeType, String noticeUrl, String imageUrl,
+		LocalDateTime postCreatedAt, GameDto game) {
+		this.gameNoticeId = gameNoticeId;
+		this.title = title;
+		this.noticeType = noticeType;
+		this.noticeUrl = noticeUrl;
+		this.imageUrl = imageUrl;
+		this.postCreatedAt = postCreatedAt;
+		this.game = game;
 	}
 }
