@@ -9,6 +9,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import com.hamgame.hamgame.domain.game.entity.Game;
 import com.hamgame.hamgame.domain.gameNotice.entity.GameNotice;
 
-public interface GameNoticeRepository extends JpaRepository<GameNotice, Long> {
+public interface GameNoticeRepository extends JpaRepository<GameNotice, Long>, GameNoticeRepositoryCustom {
 	Page<GameNotice> findByGameIn(Set<Game> games, Pageable pageable);
 }

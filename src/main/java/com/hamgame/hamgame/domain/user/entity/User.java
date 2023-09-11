@@ -72,6 +72,7 @@ public class User extends BaseTimeEntity {
 	@JoinTable(name = "user_games",
 		joinColumns = {@JoinColumn(name = "user_id")},
 		inverseJoinColumns = {@JoinColumn(name = "game_id")})
+	@Builder.Default
 	private Set<Game> games = new HashSet<>();
 
 	public void updateInfo(String nickname, String bio, String imageUrl) {

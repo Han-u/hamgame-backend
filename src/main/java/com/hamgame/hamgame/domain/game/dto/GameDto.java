@@ -2,10 +2,10 @@ package com.hamgame.hamgame.domain.game.dto;
 
 import com.hamgame.hamgame.domain.game.entity.Game;
 import com.hamgame.hamgame.domain.game.entity.GameCategory;
+import com.querydsl.core.annotations.QueryProjection;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,7 +13,6 @@ import lombok.NoArgsConstructor;
 @Schema(description = "게임 조회 응답 DTO")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor
 @Builder
 public class GameDto {
 	@Schema(description = "게임 번호")
@@ -49,5 +48,14 @@ public class GameDto {
 			.imageUrl(imageUrl)
 			.homepageUrl(homepageUrl)
 			.build();
+	}
+
+	@QueryProjection
+	public GameDto(Long gameId, String name, GameCategory category, String imageUrl, String homepageUrl) {
+		this.gameId = gameId;
+		this.name = name;
+		this.category = category;
+		this.imageUrl = imageUrl;
+		this.homepageUrl = homepageUrl;
 	}
 }

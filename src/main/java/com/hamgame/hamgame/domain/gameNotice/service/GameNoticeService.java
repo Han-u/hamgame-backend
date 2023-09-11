@@ -17,16 +17,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.hamgame.hamgame.domain.RestPage;
 import com.hamgame.hamgame.domain.crawler.util.CrawlerFactory;
-import com.hamgame.hamgame.domain.game.entity.Game;
 import com.hamgame.hamgame.domain.gameNotice.dto.GameNoticeConfigDto;
 import com.hamgame.hamgame.domain.gameNotice.dto.GameNoticeDto;
 import com.hamgame.hamgame.domain.gameNotice.entity.GameNotice;
 import com.hamgame.hamgame.domain.gameNotice.entity.repository.GameNoticeConfigRepository;
 import com.hamgame.hamgame.domain.gameNotice.entity.repository.GameNoticeRepository;
-import com.hamgame.hamgame.domain.user.entity.User;
 import com.hamgame.hamgame.domain.user.entity.repository.UserRepository;
-import com.hamgame.hamgame.exception.CustomException;
-import com.hamgame.hamgame.exception.payload.ErrorCode;
 
 import lombok.RequiredArgsConstructor;
 
@@ -41,10 +37,7 @@ public class GameNoticeService {
 	@Cacheable(value = "favoriteGameNotice", key = "#userId")
 	@Transactional(readOnly = true)
 	public Page<GameNoticeDto> getMyGameNoticeList(Pageable pageable, Long userId) {
-		User user = userRepository.findById(userId)
-			.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
-		Set<Game> games = user.getGames();
-		return new RestPage<>(gameNoticeRepository.findByGameIn(games, pageable).map(GameNoticeDto::of));
+		return new RestPage<>(gameNoticeRepository.findFavoriteNoticeByUserId(userId, pageable));
 	}
 
 	@Scheduled(cron = "5 0 0 * * *", zone = "Asia/Seoul")

@@ -32,17 +32,12 @@ public class BoardService {
 
 	@Transactional(readOnly = true)
 	public Page<BoardListDto> getBoardList(Long gameId, Pageable pageable, BoardCategory boardCategory) {
-		if (boardCategory == null) {
-			return boardRepository.findByGame_GameId(gameId, pageable).map(BoardListDto::of);
-		} else {
-			return boardRepository.findByBoardCategoryAndGame_GameId(boardCategory, gameId, pageable)
-				.map(BoardListDto::of);
-		}
+		return boardRepository.getBoardListPage(pageable, gameId, boardCategory);
 	}
 
 	@Transactional(readOnly = true)
 	public BoardDto getBoard(Long gameId, Long boardId) {
-		Board board = boardRepository.findByBoardIdAndGame_GameId(boardId, gameId)
+		Board board = boardRepository.findByBoardId(boardId)
 			.orElseThrow(() -> new CustomException(ErrorCode.BOARD_NOT_FOUND));
 		return BoardDto.of(board);
 	}
@@ -50,21 +45,17 @@ public class BoardService {
 	@Transactional
 	public void createBoard(Long gameId, BoardSaveRequest boardSaveRequest, Long userId) {
 		Game game = gameRepository.findById(gameId).orElseThrow(() -> new CustomException(ErrorCode.GAME_NOT_FOUND));
-		User user = userRepository.findById(userId)
-			.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
-
+		User user = userRepository.getReferenceById(userId);
 		Board board = boardSaveRequest.toEntity(game, user);
 		boardRepository.save(board);
 	}
 
 	@Transactional
 	public void updateBoard(Long gameId, Long boardId, BoardSaveRequest boardSaveRequest, Long userId) {
-		Board board = boardRepository.findByBoardIdAndGame_GameId(boardId, gameId)
+		Board board = boardRepository.findById(boardId)
 			.orElseThrow(() -> new CustomException(ErrorCode.BOARD_NOT_FOUND));
-		User user = userRepository.findById(userId)
-			.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
-		isAuthorOfPost(board, user);
+		isAuthorOfPost(board, userId);
 
 		board.updateBoard(boardSaveRequest.getTitle(), boardSaveRequest.getContent(), boardSaveRequest.getImage(),
 			boardSaveRequest.getBoardCategory());
@@ -72,17 +63,17 @@ public class BoardService {
 
 	@Transactional
 	public void deleteBoard(Long gameId, Long boardId, Long userId) {
-		Board board = boardRepository.findByBoardIdAndGame_GameId(boardId, gameId)
+		Board board = boardRepository.findById(boardId)
 			.orElseThrow(() -> new CustomException(ErrorCode.BOARD_NOT_FOUND));
-		User user = userRepository.findById(userId)
-			.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
-		isAuthorOfPost(board, user);
+
+		isAuthorOfPost(board, userId);
+
 		boardRepository.delete(board);
 	}
 
-	public void isAuthorOfPost(Board board, User user) {
-		if (!Objects.equals(board.getUser().getId(), user.getId())) {
-			throw new CustomException(ErrorCode.BAD_REQUEST);
+	public void isAuthorOfPost(Board board, Long userId) {
+		if (!Objects.equals(board.getUser().getId(), userId)) {
+			throw new CustomException(ErrorCode.NOT_POST_AUTHOR);
 		}
 	}
 }

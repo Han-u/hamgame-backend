@@ -13,6 +13,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.validation.constraints.NotNull;
 
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
@@ -48,23 +49,27 @@ public class Board extends BaseTimeEntity {
 
 	private String image;
 
-	private int viewCount = 0;
+	@Column(columnDefinition = "int(11) default 0")
+	private int viewCount;
 
 	@Enumerated(EnumType.STRING)
 	private BoardCategory boardCategory;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "game_id")
+	@NotNull
 	private Game game;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "user_id")
+	@NotNull
 	private User user;
 
 	@OneToMany(mappedBy = "board")
 	private List<Comment> comment;
 
-	private boolean isDeleted = Boolean.FALSE;
+	@Column(columnDefinition = "tinyint(1) default 0")
+	private boolean isDeleted;
 
 	public void updateBoard(String title, String content, String image, BoardCategory boardCategory) {
 		this.title = title;
