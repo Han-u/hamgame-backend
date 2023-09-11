@@ -15,7 +15,7 @@ public class WowCrawler extends JsoupCrawler {
 
 	@Override
 	public Elements getNoticeList(Document document) {
-		return document.select("div.List-item");
+		return document.select("div.NewsBlog-content");
 	}
 
 	@Override
