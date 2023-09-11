@@ -40,5 +40,6 @@ public class Game extends BaseTimeEntity {
 
 	private String homepageUrl;
 
-	private boolean isDeleted = Boolean.FALSE;
+	@Column(columnDefinition = "tinyint(1) default 0")
+	private boolean isDeleted;
 }
