@@ -46,7 +46,8 @@ public class Comment extends BaseTimeEntity {
 	@JoinColumn(name = "user_id")
 	private User user;
 
-	private boolean isDeleted = Boolean.FALSE;
+	@Column(columnDefinition = "tinyint(1) default 0")
+	private boolean isDeleted;
 
 	public void updateComment(String comment) {
 		this.comment = comment;

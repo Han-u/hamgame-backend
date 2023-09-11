@@ -48,6 +48,7 @@ public class GameNotice extends BaseTimeEntity {
 	@JoinColumn(name = "game_id")
 	private Game game;
 
-	private boolean isDeleted = Boolean.FALSE;
+	@Column(columnDefinition = "tinyint(1) default 0")
+	private boolean isDeleted;
 
 }
