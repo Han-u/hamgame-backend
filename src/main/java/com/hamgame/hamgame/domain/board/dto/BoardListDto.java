@@ -4,9 +4,9 @@ import java.time.LocalDateTime;
 
 import com.hamgame.hamgame.domain.board.entity.Board;
 import com.hamgame.hamgame.domain.board.entity.BoardCategory;
+import com.querydsl.core.annotations.QueryProjection;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,7 +15,6 @@ import lombok.NoArgsConstructor;
 @Getter
 @Builder
 @NoArgsConstructor
-@AllArgsConstructor
 public class BoardListDto {
 	@Schema(description = "게시글 번호")
 	private Long boardId;
@@ -51,5 +50,21 @@ public class BoardListDto {
 			.nickname(board.getUser().getNickname())
 			.commentCount(board.getComment().size())
 			.build();
+	}
+
+	@QueryProjection
+	public BoardListDto(Long boardId, String title, String content, String image, int viewCount,
+		BoardCategory category, LocalDateTime createdAt, LocalDateTime updatedAt, String nickname, int commentCount) {
+		this.boardId = boardId;
+		this.title = title;
+		this.content = content;
+		this.image = image;
+		this.viewCount = viewCount;
+		this.boardCategory = category;
+		this.createdAt = createdAt;
+		this.updatedAt = updatedAt;
+		this.nickname = nickname;
+		this.commentCount = commentCount;
+
 	}
 }

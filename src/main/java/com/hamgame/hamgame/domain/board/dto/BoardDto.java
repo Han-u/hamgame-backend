@@ -3,6 +3,7 @@ package com.hamgame.hamgame.domain.board.dto;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import com.hamgame.hamgame.domain.board.entity.Board;
 import com.hamgame.hamgame.domain.board.entity.BoardCategory;
@@ -37,6 +38,7 @@ public class BoardDto {
 	@Schema(description = "작성일자")
 	private LocalDateTime createdAt;
 	@Schema(description = "댓글")
+	@Builder.Default
 	private List<CommentDto> comments = new ArrayList<>();
 
 	public static BoardDto of(Board board) {
@@ -49,7 +51,7 @@ public class BoardDto {
 			.imageUrl(board.getImage())
 			.commentCount(board.getComment().size())
 			.createdAt(board.getCreatedAt())
-			.comments(CommentDto.of(board.getComment()))
+			.comments(board.getComment().stream().map(CommentDto::of).collect(Collectors.toList()))
 			.build();
 	}
 }

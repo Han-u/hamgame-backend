@@ -41,10 +41,7 @@ public class GameNoticeService {
 	@Cacheable(value = "favoriteGameNotice", key = "#userId")
 	@Transactional(readOnly = true)
 	public Page<GameNoticeDto> getMyGameNoticeList(Pageable pageable, Long userId) {
-		User user = userRepository.findById(userId)
-			.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
-		Set<Game> games = user.getGames();
-		return new RestPage<>(gameNoticeRepository.findByGameIn(games, pageable).map(GameNoticeDto::of));
+		return new RestPage<>(gameNoticeRepository.findFavoriteNoticeByUserId(userId, pageable));
 	}
 
 	@Scheduled(cron = "5 0 0 * * *", zone = "Asia/Seoul")
