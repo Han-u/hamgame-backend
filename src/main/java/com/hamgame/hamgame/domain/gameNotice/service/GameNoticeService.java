@@ -17,16 +17,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.hamgame.hamgame.domain.RestPage;
 import com.hamgame.hamgame.domain.crawler.util.CrawlerFactory;
-import com.hamgame.hamgame.domain.game.entity.Game;
 import com.hamgame.hamgame.domain.gameNotice.dto.GameNoticeConfigDto;
 import com.hamgame.hamgame.domain.gameNotice.dto.GameNoticeDto;
 import com.hamgame.hamgame.domain.gameNotice.entity.GameNotice;
 import com.hamgame.hamgame.domain.gameNotice.entity.repository.GameNoticeConfigRepository;
 import com.hamgame.hamgame.domain.gameNotice.entity.repository.GameNoticeRepository;
-import com.hamgame.hamgame.domain.user.entity.User;
 import com.hamgame.hamgame.domain.user.entity.repository.UserRepository;
-import com.hamgame.hamgame.exception.CustomException;
-import com.hamgame.hamgame.exception.payload.ErrorCode;
 
 import lombok.RequiredArgsConstructor;
 
